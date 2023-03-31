@@ -1,30 +1,47 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+    <div class="text-center py-2">
+        <h1 class="text-4xl font-bold">cinema.</h1>
+        <div class="px-10" v-if="route.path !== '/'">
+            <button class="flex gap-2 items-center">
+                <span class="button-back"></span>
+                <a @click="onBack">Back</a>
+            </button>
+        </div>
+    </div>
+    <RouterView />
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script setup>
+import { getMovieList } from '@/stores/store';
+import { onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+const useStore = getMovieList();
+const route = useRoute();
+const router = useRouter();
+const onBack = () => {
+    if (route.path === '/history') {
+        router.push('/')
+    } else {
+        router.back();
+    }
 }
 
-nav {
-  padding: 30px;
-}
+onMounted(() => {
+    useStore.fetchApiOmdb();
+})
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
 
-nav a.router-link-exact-active {
-  color: #42b983;
+</script>
+
+<style lang="scss" scoped>
+$bg-color : #19376D;
+
+.button-back {
+    border: solid $bg-color;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
 }
 </style>
